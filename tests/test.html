@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>BrainChain WebAuthN Tests</title>
+    <style>
+        .test-pass { color: green; }
+        .test-fail { color: red; }
+        .test-group { margin: 10px 0; padding: 10px; border: 1px solid #ccc; }
+    </style>
+</head>
+<body>
+    <h1>BrainChain WebAuthN Tests</h1>
+    <div id="test-results"></div>
+    <script src="../libs/bn.js"></script>
+    <script src="../libs/noble-curves.js"></script>
+    <script src="../libs/cbor.js"></script>
+    <script type="module">
+        import { runTests } from './test-runner.js';
+        import { webAuthnTests } from './webauthn.test.js';
+        
+        window.onload = async () => {
+            await runTests(webAuthnTests);
+        };
+    </script>
+</body>
+</html>
