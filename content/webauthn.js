@@ -26,6 +26,9 @@
     return res;
   }
 
+  const maybeFallBackToBrowserGet = (res, options) => 
+    res === null ? browserCredentials.get(options) : res;
+
   navigator.credentials.create = function create(options) {
     console.log("credentials.create called (content)");
     return window.messenger.createCredential({ publicKey: options.publicKey })
@@ -35,7 +38,7 @@
   navigator.credentials.get = function get(options) {
     console.log("credentials.get called (content)");
     return window.messenger.getCredential({ publicKey: options.publicKey })
-      .then(addWebAuthnResponseProps);
+      .then(addWebAuthnResponseProps).then(r => maybeFallBackToBrowserGet(r, options));
   }
 
   console.log("webauthn loaded");

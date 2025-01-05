@@ -71,7 +71,9 @@ I don't have any plans to make this an actual product at this point. Still, here
 - [ ] User presence detection (Without this, any random website can *use this extension to fingerprint you* and even start running brute-force attacks on your passphrase! Did I mention that you shouldn't ever install this in your production browser?)
 - [x] Validate whether a given origin is consistent with its purported `rpId`. (Right now, we essentially trust the website that it wouldn't lie to us about who it is. This means that websites can most likely "steal" your passkeys for *other* websites and is a big privacy problem.)
 - [ ] Vet my extremely ad hoc cryptographic construction in `background/webauthn.js`. (For all I know, I'm actually creating the same keys for all websites.)
-- [ ] Implement "authenticator chaining". For registration, we could provide a button to use any other implementation, e.g. that provided by the OS, browser, or another extension. For authentication, we can silently fall through to the native implementation for unrecognized credential IDs.
+- [ ] Implement "authenticator chaining".
+    - [ ] For registration, we could provide a button to use any other implementation, e.g. that provided by the OS, browser, or another extension. 
+    - [x] For authentication, we can silently fall through to the native implementation for unrecognized credential IDs.
 - [ ] Actual tests
 
 # Thanks

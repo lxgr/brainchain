@@ -32,7 +32,7 @@ export async function handleGet(options, origin, auth) {
 
     if (!validCredential) {
         console.log("No valid credential found");
-        return;
+        return null;
     }
 
     // Now we know that we can rederive the key for this credential!
