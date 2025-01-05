@@ -31,14 +31,30 @@
 
   navigator.credentials.create = function create(options) {
     console.log("credentials.create called (content)");
-    return window.messenger.createCredential({ publicKey: options.publicKey })
-      .then(addWebAuthnResponseProps);
+    return browserCredentials.create(options).then(r => {
+      console.log("browserCreate", r);
+      if (r !== null) {
+        return r;
+      }
+      else {
+        return window.messenger.createCredential({ publicKey: options.publicKey })
+          .then(addWebAuthnResponseProps);
+      }
+    })
   }
 
   navigator.credentials.get = function get(options) {
     console.log("credentials.get called (content)");
-    return window.messenger.getCredential({ publicKey: options.publicKey })
-      .then(addWebAuthnResponseProps).then(r => maybeFallBackToBrowserGet(r, options));
+    return browserCredentials.get(options).then(r => {
+      console.log("browserGet", r);
+      if (r !== null) {
+        return r;
+      }
+      else {
+        return window.messenger.getCredential({ publicKey: options.publicKey })
+          .then(addWebAuthnResponseProps);
+      }
+    })
   }
 
   console.log("webauthn loaded");
