@@ -1,8 +1,6 @@
 (function () {
-  // Store the original navigator.credentials if it exists
   const originalCredentials = navigator.credentials;
 
-  // Create our custom WebAuthn implementation
   class WebAuthnCredential {
     constructor(options) {
       this.id = options.id;
@@ -12,13 +10,6 @@
     }
   }
 
-  const browserCredentials = {
-    create: navigator.credentials.create.bind(
-      navigator.credentials,
-    ),
-    get: navigator.credentials.get.bind(navigator.credentials),
-  };
-
   function addWebAuthnResponseProps(res) {
     if (res) {
       res.getClientExtensionResults = () => { return {} };
@@ -26,35 +17,37 @@
     return res;
   }
 
-  const maybeFallBackToBrowserGet = (res, options) => 
-    res === null ? browserCredentials.get(options) : res;
+  const browserCredentials = {
+    create: navigator.credentials.create.bind(navigator.credentials),
+    get: navigator.credentials.get.bind(navigator.credentials),
+  };
 
-  navigator.credentials.create = function create(options) {
+  navigator.credentials.create = async function create(options) {
     console.log("credentials.create called (content)");
-    return browserCredentials.create(options).then(r => {
-      console.log("browserCreate", r);
-      if (r !== null) {
-        return r;
-      }
-      else {
+    try {
+      return await browserCredentials.create(options);
+    } catch (error) {
+      if (error.name === 'AbortError') {
+        console.log("Native WebAuthn aborted, falling back to Brainchain");
         return window.messenger.createCredential({ publicKey: options.publicKey })
           .then(addWebAuthnResponseProps);
       }
-    })
+      throw error;
+    }
   }
 
-  navigator.credentials.get = function get(options) {
+  navigator.credentials.get = async function get(options) {
     console.log("credentials.get called (content)");
-    return browserCredentials.get(options).then(r => {
-      console.log("browserGet", r);
-      if (r !== null) {
-        return r;
-      }
-      else {
+    try {
+      return await browserCredentials.get(options);
+    } catch (error) {
+      if (error.name === 'AbortError') {
+        console.log("Native WebAuthn aborted, falling back to Brainchain");
         return window.messenger.getCredential({ publicKey: options.publicKey })
           .then(addWebAuthnResponseProps);
       }
-    })
+      throw error;
+    }
   }
 
   console.log("webauthn loaded");
