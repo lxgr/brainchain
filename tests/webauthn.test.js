@@ -1,12 +1,12 @@
 // tests/fixtures.js
-export const getMockWebAuthnOptions = (hostname = 'example.com') => ({
-    hostname,
+export const getMockWebAuthnOptions = (origin = 'example.com') => ({
+    origin,
     options: {
         publicKey: {
             challenge: new Uint8Array([1, 2, 3, 4]),
             rp: {
                 name: 'Example RP',
-                id: hostname,
+                id: origin,
             },
             user: {
                 id: new Uint8Array([1]),
@@ -37,7 +37,7 @@ export const webAuthnTests = {
             const mockWebAuthnOptions = getMockWebAuthnOptions();
             const result = await handleCreate(
                 mockWebAuthnOptions.options,
-                mockWebAuthnOptions.hostname,
+                mockWebAuthnOptions.origin,
                 MockAuth
             );
             
@@ -57,7 +57,7 @@ export const webAuthnTests = {
             try {
                 await handleCreate(
                     mockWebAuthnOptions.options,
-                    mockWebAuthnOptions.hostname,
+                    mockWebAuthnOptions.origin,
                     notLoggedInAuth
                 );
                 throw new Error('Should have thrown error');
@@ -66,24 +66,24 @@ export const webAuthnTests = {
             }
         },
 
-        'different hostnames get different keys': async () => {
+        'different origins get different keys': async () => {
             const options1 = getMockWebAuthnOptions("example.com");
             const options2 = getMockWebAuthnOptions("example.net");
             const result1 = await handleCreate(
                 options1.options,
-                options1.hostname,
+                options1.origin,
                 MockAuth
             );
             
             const result2 = await handleCreate(
                 options2.options,
-                options2.hostname,
+                options2.origin,
                 MockAuth
             );
             
             assert(
                 result1.rawId.some((byte, i) => byte !== result2.rawId[i]),
-                'Credentials should be different for different hostnames!'
+                'Credentials should be different for different origins!'
             );
         }
     },

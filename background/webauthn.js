@@ -1,7 +1,8 @@
 import { p1363ToDer } from "../libs/ecdsa-utils.js";
 import { utils } from "./util.js";
+import { validateRpId } from './validateRpId.js';
 
-export async function handleGet(options, hostname, auth) {
+export async function handleGet(options, origin, auth) {
     console.log("handle get called");
 
     // TODO: Ask for user consent!
@@ -18,8 +19,7 @@ export async function handleGet(options, hostname, auth) {
 
     const rootSecret = await getRootSecret(pw);
 
-    // TODO: Don't let RPs set any old ID; validate that they can! (horrendous security hole)
-    const rpId = options.publicKey.rpId || hostname;
+    const rpId = validateRpId(options.publicKey.rpId, origin);
 
     let validCredential = null;
     for (const credential of options.publicKey.allowCredentials) {
@@ -79,7 +79,7 @@ export async function handleGet(options, hostname, auth) {
     };
 }
 
-export async function handleCreate(options, hostname, auth) {
+export async function handleCreate(options, origin, auth) {
     console.log("handle create called");
     const pkOptions = options.publicKey;
 
@@ -91,8 +91,7 @@ export async function handleCreate(options, hostname, auth) {
 
     const rootSecret = await getRootSecret(await auth.getPassphrase());
 
-    // TODO: Don't let RPs set any old ID; validate that they can! (horrendous security bug right here)
-    const rpId = pkOptions.rp.id || hostname;
+    const rpId = validateRpId(options.publicKey.rpId, origin);
 
     const rawCredentialId = await newCredentialIdForRp(rootSecret, rpId);
     const key = await deriveKeyPair(rootSecret, rawCredentialId);

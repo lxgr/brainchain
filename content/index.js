@@ -5,7 +5,7 @@ let messenger = {
             const response = browser.runtime.sendMessage({
                 type: 'create_credential',
                 options: options,
-                hostname: window.location.hostname
+                origin: window.location.origin
             });
             response.then((value) => resolve(cloneInto(value.response, window)));
             response.catch((error) => reject(cloneInto(error, window)));
@@ -17,7 +17,7 @@ let messenger = {
             const response = browser.runtime.sendMessage({
                 type: 'get_credential',
                 options: options,
-                hostname: window.location.hostname
+                origin: window.location.origin
             });
             response.then((value) => resolve(cloneInto(value.response, window)));
             response.catch((error) => reject(cloneInto(error, window)));

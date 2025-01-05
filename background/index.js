@@ -1,5 +1,5 @@
 import { loadlibs } from './loadlibs.js';
-import { handleCreate, handleGet } from './webauthn.js';
+import { handleCreate, handleGet, validateCredentialId } from './webauthn.js';
 import { AuthManager } from './auth.js';
 
 const auth = new AuthManager();
@@ -27,11 +27,11 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
             return auth.isLoggedIn().then(r => ({ isLoggedIn: r }));
         case 'create_credential':
             console.log("handling create");
-            return handleCreate(message.options, message.hostname, auth)
+            return handleCreate(message.options, message.origin, auth)
                 .then(response => ({ success: true, response: response }));
         case 'get_credential':
             console.log("handling get");
-            return handleGet(message.options, message.hostname, auth)
+            return handleGet(message.options, message.origin, auth)
                 .then(response => ({ success: true, response: response }));
     }
 });
