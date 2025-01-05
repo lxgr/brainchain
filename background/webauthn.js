@@ -7,7 +7,6 @@ export async function handleGet(options, origin, auth) {
 
     // TODO: Ask for user consent!
     const pw = await auth.getPassphrase();
-    console.log(pw);
     if (pw == null) {
         return;
     }
