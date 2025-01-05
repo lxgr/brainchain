@@ -20,9 +20,9 @@ browser.webNavigation.onCommitted.addListener((details) => {
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
     switch (message.type) {
         case 'login':
-            return auth.login(message.password).then((r) => (r));
+            return auth.login(message.password);
         case 'logout':
-            return auth.logout().then(r => r);
+            return auth.logout();
         case 'getLoginState':
             return auth.isLoggedIn().then(r => ({ isLoggedIn: r }));
         case 'create_credential':

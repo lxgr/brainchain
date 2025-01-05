@@ -19,26 +19,23 @@
     get: navigator.credentials.get.bind(navigator.credentials),
   };
 
+  function addWebAuthnResponseProps(res) {
+    if (res) {
+      res.getClientExtensionResults = () => { return {} };
+    }
+    return res;
+  }
+
   navigator.credentials.create = function create(options) {
     console.log("credentials.create called (content)");
-    delete options.signal;
-    result = window.messenger.createCredential(options).then(res => {
-      res.getClientExtensionResults = () => { return {} };
-      return res;
-    })
-    return result;
+    return window.messenger.createCredential({ publicKey: options.publicKey })
+      .then(addWebAuthnResponseProps);
   }
 
   navigator.credentials.get = function get(options) {
     console.log("credentials.get called (content)");
-    delete options.signal;
-    result = window.messenger.getCredential(options).then(res => {
-      if (res) {
-        res.getClientExtensionResults = () => { return {} };
-      }
-      return res
-    })
-    return result;
+    return window.messenger.getCredential({ publicKey: options.publicKey })
+      .then(addWebAuthnResponseProps);
   }
 
   console.log("webauthn loaded");
