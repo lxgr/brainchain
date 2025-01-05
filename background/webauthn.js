@@ -8,12 +8,12 @@ export async function handleGet(options, origin, auth) {
     // TODO: Ask for user consent!
     const pw = await auth.getPassphrase();
     if (pw == null) {
-        return;
+        return null;
     }
 
     if (!options.publicKey.allowCredentials || options.publicKey.allowCredentials.length < 1) {
         console.log("not our credential");
-        return
+        return null;
     }
 
     const rootSecret = await getRootSecret(pw);
