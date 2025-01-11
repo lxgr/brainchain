@@ -74,6 +74,10 @@ I don't have any plans to make this an actual product at this point. Still, here
 - [ ] Implement "authenticator chaining".
     - [ ] For registration, we could provide a button to use any other implementation, e.g. that provided by the OS, browser, or another extension. 
     - [x] For authentication, we can silently fall through to the native implementation for unrecognized credential IDs.
+- [ ] Implement a few extensions?
+  - [ ] PRF seems like it should work
+  - [ ] credProtect seems doable once we have user verification (by storing a "is protected" bit in the credential ID)
+- [ ] Maybe make the credential ID include an authenticated-encrypted payload instead of just an authentication tag (so we can store secret data in it)
 - [ ] Actual tests
 
 # Thanks
